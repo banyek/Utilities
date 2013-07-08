@@ -128,7 +128,7 @@ print "Password: ";
 # Shows help
 sub usage {
   print "Usage: ./checkconnections.pl [ -h ] [ -u user ] [ -p password ] [ -s ] [ -c ] [ -r ] [ -d ]\n";
-  print "  if none of -s -c -d are given, script provides a full connection list";
+  print "  if none of -s -c -d are given, script provides a full connection list\n";
   print " -h                 this help screen\n";
   print " -u username        username with connect to mysql. Defaults 'root'\n";
   print " -p password        password with connect to mysql. If not provided,asks for it.\n";
