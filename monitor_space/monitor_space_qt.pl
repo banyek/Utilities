@@ -109,7 +109,6 @@ else {
 $dbh = DBI->connect('dbi:mysql:information_schema',$user,$password);
 $sth = $dbh->prepare($sql);
 $sth -> execute or die "SQL error: $DBI::errstr\n";
-print "$sql\n";
 if ( ! defined $opt_e){
   if (defined $opt_w){
     print "Date                  Table name                                           Data size  Index size  Total size\n============================================================================================================\n";
