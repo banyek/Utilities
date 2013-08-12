@@ -21,7 +21,7 @@ if ( -e $configfile){
 }
 
 # Dealing with command line variables
-getopts('hu:p:scrd');
+getopts('hu:p:scrdl');
 
 # show help screen
 if ($opt_h){
@@ -42,15 +42,17 @@ if (defined $opt_u){
 } elsif ($user eq '') {
   $user="root";
 }
-
+if (defined $opt_l){
+  $wherelive=" WHERE Command NOT LIKE 'Sleep' "
+}
 # If -s provided it will show connections by host
 if ($opt_s){
-$header="Connections                  Hostname\n=====================================\n";
+$header="Connections                            Hostname\n===============================================\n";
 $sql="SELECT
                 COUNT(*) AS conn_count,
                 SUBSTRING_INDEX(host,':',1) AS ip
         FROM
-                INFORMATION_SCHEMA.PROCESSLIST
+                INFORMATION_SCHEMA.PROCESSLIST" . $wherelive . "
         GROUP BY
                 ip
         ORDER BY
@@ -62,12 +64,12 @@ $type="host";
 }
 # If -c provided it will show connections by users
 if ($opt_c) {
-$header="Connections                  Username\n=====================================\n";
+$header="Connections                            Username\n===============================================\n";
 $sql="SELECT
         COUNT(*) AS conn_count,
         user
     FROM
-        INFORMATION_SCHEMA.PROCESSLIST
+        INFORMATION_SCHEMA.PROCESSLIST" .$wherelive . "
     GROUP BY
         user
     ORDER BY
@@ -78,12 +80,12 @@ $type="user";
 }
 # If -d provided it will show connections by database
 if ($opt_d) {
-    $header="Connections             Database\n=====================================\n";
+    $header="Connections                       Database\n===============================================\n";
     $sql="SELECT
             COUNT(*) AS conn_count,
             db
         FROM
-                    INFORMATION_SCHEMA.PROCESSLIST
+                    INFORMATION_SCHEMA.PROCESSLIST" .$wherelive. "
             GROUP BY
                     db
             ORDER BY
@@ -95,14 +97,14 @@ if ($opt_d) {
 
 # If no -s -c -d were provided, show connections for all available options
 if ($type eq ''){
-    $header="Connections                  Hostname            Username            Database\n=============================================================================\n";
+    $header="Connections                            Hostname            Username            Database\n=======================================================================================\n";
     $sql ="SELECT
         COUNT(*) AS conn_count,
         SUBSTRING_INDEX(host,':',1) AS ip,
         user,
         db
     FROM
-        INFORMATION_SCHEMA.PROCESSLIST
+        INFORMATION_SCHEMA.PROCESSLIST" .$wherelive ."
     GROUP BY
         ip,
         user,
@@ -132,9 +134,10 @@ sub usage {
   print " -h                 this help screen\n";
   print " -u username        username with connect to mysql. Defaults 'root'\n";
   print " -p password        password with connect to mysql. If not provided,asks for it.\n";
-  print " -s            show connections by server\n";
+  print " -s                 show connections by server\n";
   print " -c                 show connections by users\n";
   print " -d                 show connections by database\n";
+  print " -l                 print only connections which are not in 'Sleep' state";
   print "\n";
   exit 0;
 }
@@ -157,19 +160,19 @@ sub queryconn($type) {
         # Formatted output for results
         switch($type){
             case "full" {
-                printf("%12d%25s%20s%20s\n",$row[0],$hostname,$row[2],$row[3]);
+                printf("%12d%35s%20s%20s\n",$row[0],$hostname,$row[2],$row[3]);
                 break;
             }
             case "host" {
-                printf("%12d%25s\n",$row[0],$hostname);
+                printf("%12d%35s\n",$row[0],$hostname);
                 break;
             }
             case "user" {
-                printf("%12d%25s\n",$row[0],$row[1]);
+                printf("%12d%35s\n",$row[0],$row[1]);
                 break;
             }
             case "db" {
-                printf("%12d%25s\n",$row[0],$row[1]);
+                printf("%12d%35s\n",$row[0],$row[1]);
                 break;
             }
 
