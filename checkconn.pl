@@ -10,16 +10,36 @@ use Config::Simple;     # read .my.cnf file
 use Getopt::Std;        # parse command line arguments
 use Switch;             # Use 'case'
 use Term::ReadKey;      # Read password in safe
+use File::Temp;
 
 # Load credentials from ~/.my.cnf if exists ([client] section)
-# If password remains empty (eg. no ~/.my.cnf file) it will set from -p or asked later
+# NOTE: THIS IS NOT THE SAFEST WAY!
+# The problem is, that the rpm available Perl-Config utilities failing when enountering lines starting with '!'
+# To avoid this I create a tempfile, copies over the contents of local my.cnf without the inlude lines, parse that config,
+# and then remove the temporary file.
+# That means during the config parse they will appear a file for a short period with credentials. I don't encourage it using
+# at public available places. You can use Config::MySQL,
+#  or patching Config::Simple (see more at https://rt.cpan.org/Public/Bug/Display.html?id=94177)
+#
+
 $configfile = $ENV{"HOME"}."/.my.cnf";
 if ( -e $configfile){
-    $config = new Config::Simple(filename=>$configfile);
+    $tempconfig = File::Temp->new;
+    open(CONFIG,"<", "$configfile");
+    open(TMPCONF,">","$tempconfig");
+    while(<CONFIG>) {
+        if ($_ !~ /^!/){
+            print TMPCONF $_;
+        }
+    }
+    close(CONFIG);
+    print $tempconfig;
+    close(TMPCONF);
+    $config = new Config::Simple(filename=>$tempconfig);
+    unlink tempconfig;
     $user = $config->param("client.user"), "\n";
     $password = $config->param("client.password"), "\n";
 }
-
 # Dealing with command line variables
 getopts('hu:p:scrdl');
 
