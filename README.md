@@ -13,3 +13,5 @@ Everday utilities for sysadmin stuff. Mostly for MySQL.
   - Monitors space changes on mysql server
 	- monitor_space_collector.pl - collects data about table sizes
 	- monitor_space_qt.pl - Query tool for monitor space
+* binlog_extractor.awk
+	- You have to give it a GTID and it will return the next position from an SQL dump of MySQL binlog
