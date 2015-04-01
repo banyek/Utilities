@@ -28,6 +28,7 @@ if ( -e $configfile){
     unlink tempconfig;
     $user = $config->param("client.user"), "\n";
     $password = $config->param("client.password"), "\n";
+    $host = $config->param("client.host"), "\n";
 }
 
 # Dealing with command line variables
@@ -51,6 +52,9 @@ if (defined $opt_u){
   $user=$opt_u;
 } elsif ($user eq '') {
   $user="root";
+}
+if ($host eq '') {
+   $host="127.0.0.1"
 }
 
 # Get minimum time
@@ -120,7 +124,7 @@ else {
     }
 }
 
-$dbh = DBI->connect('dbi:mysql:information_schema',$user,$password);
+$dbh = DBI->connect("dbi:mysql:information_schema;host=$host",$user,$password);
 $sth = $dbh->prepare($sql);
 $sth -> execute or die "SQL error: $DBI::errstr\n";
 if ( ! defined $opt_e){

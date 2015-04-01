@@ -26,6 +26,7 @@ if ( -e $configfile){
     unlink tempconfig;
     $user = $config->param("client.user"), "\n";
     $password = $config->param("client.password"), "\n";
+    $host = $config->param("client.host"), "\n";
 }
 # Dealing with command line variables
 getopts('hu:p:');
@@ -49,6 +50,9 @@ if (defined $opt_u){
 } elsif ($user eq '') {
   $user="root";
 }
+if ($host eq '') {
+   $host="127.0.0.1"
+}
 
 # Reads password form prompt
 sub getPassword {
@@ -71,7 +75,7 @@ sub usage {
 }
 
 # Connect to database
-$dbh = DBI->connect('dbi:mysql:information_schema',$user,$password);
+$dbh = DBI->connect("dbi:mysql:information_schema;host=$host",$user,$password);
 # Get current date from db
 $currentdate = $dbh->selectrow_array('SELECT NOW()');
 
