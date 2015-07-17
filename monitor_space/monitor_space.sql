@@ -7,4 +7,5 @@ CREATE TABLE `test`.`table_sizes` (
   `datasize` decimal(10,2) DEFAULT NULL,
   `indexsize` decimal(10,2) DEFAULT NULL,
   `totalsize` decimal(10,2) DEFAULT NULL,
-PRIMARY KEY (`id`);
+PRIMARY KEY (`id`)
+);
