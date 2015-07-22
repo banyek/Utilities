@@ -1,10 +1,16 @@
 -- CREATES DATABASE TABLE for monitor_space utility
 
-CREATE TABLE `test`.`table_sizes` (
+CREATE TABLE `dbinfo`.`table_sizes` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `tablename` varchar(50) DEFAULT NULL,
-  `datasize` decimal(10,2) DEFAULT NULL,
-  `indexsize` decimal(10,2) DEFAULT NULL,
-  `totalsize` decimal(10,2) DEFAULT NULL,
-PRIMARY KEY (`id`);
+  `hostname` varchar(64) NOT NULL,
+  `table_schema` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  `table_rows` bigint(21),
+  `data_size` decimal(10,2) NOT NULL,
+  `index_size` decimal(10,2) NOT NULL,
+  `total_size` decimal(10,2) NOT NULL,
+  `create_time` datetime,
+  `update_time` datetime,
+  `check_time` datetime,
+PRIMARY KEY (`id`));
