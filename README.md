@@ -15,3 +15,7 @@ Everday utilities for sysadmin stuff. Mostly for MySQL.
 	- monitor_space_qt.pl - Query tool for monitor space
 * binlog_extractor.awk
 	- You have to give it a GTID and it will return the next position from an SQL dump of MySQL binlog
+* rds_node_selector.sh
+    - fancy menu based terminal tool for connecting your rds instances. It queries the aws api for your hosts. When you use
+      the --iddqd switch it can connect to writer nodes, if not, just the readers are available (if an aurora cluster has only 1
+      node it could be writed as well. You need configured awscli, .my.cnf and dialog installed
